@@ -1,16 +1,15 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
 
-// Professional, modern typeface used by high-growth startups
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-jakarta',
+    variable: '--font-inter',
 })
 
 export const metadata: Metadata = {
-    title: 'SalesAI - Voice Intelligence for Sales & Support',
+    title: 'ConvergsAI - Voice Intelligence for Sales & Support',
     description: 'Enterprise-grade AI voice agents that handle inbound sales qualification and customer support 24/7.',
 }
 
@@ -21,7 +20,10 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="scroll-smooth">
-            <body className={`${jakarta.className} antialiased`}>{children}</body>
+            <head>
+                <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,1,700,500,300,400&display=swap" rel="stylesheet" />
+            </head>
+            <body className={`${inter.variable} font-sans antialiased`}>{children}</body>
         </html>
     )
 }

@@ -7,6 +7,10 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                sans: ['Satoshi', 'sans-serif'],
+                secondary: ['var(--font-inter)', 'sans-serif'],
+            },
             colors: {
                 primary: {
                     50: '#f0f9ff',

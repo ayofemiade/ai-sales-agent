@@ -108,10 +108,10 @@ export default function LandingPage() {
             <nav className="fixed w-full z-50 transition-all duration-300 top-0 pt-4 px-4">
                 <div className="max-w-7xl mx-auto glass-premium rounded-2xl h-16 flex items-center justify-between px-6">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                            <Zap size={16} className="text-white fill-white" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                            <img src="/logo.png" alt="ConvergsAI" className="w-full h-full object-contain rounded-lg" />
                         </div>
-                        <span className="text-lg font-bold tracking-tight">SalesAI</span>
+                        <span className="text-lg font-bold tracking-tight">ConvergsAI</span>
                     </div>
 
                     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
@@ -384,7 +384,7 @@ export default function LandingPage() {
                     <h2 className="text-3xl lg:text-5xl font-bold text-center mb-16 tracking-tight">Loved by Support & Sales VPs</h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            { name: "Sarah Jenkins", role: "VP of Sales, TechFlow", text: "We replaced our entire tier-1 SDR team with SalesAI. Connection rates up 40%." },
+                            { name: "Sarah Jenkins", role: "VP of Sales, TechFlow", text: "We replaced our entire tier-1 SDR team with ConvergsAI. Connection rates up 40%." },
                             { name: "David Chen", role: "Head of Support, CloudScale", text: "It resolved 60% of tickets without human intervention. Our CSAT score actually went UP." },
                             { name: "Jessica Lee", role: "Director of Ops, ScaleUp", text: "Finally, an AI that handles both sales booking and support triage in one phone number." }
                         ].map((t, i) => (
@@ -491,7 +491,7 @@ export default function LandingPage() {
                 <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
                     <h2 className="text-5xl lg:text-7xl font-bold mb-8 tracking-tight">Ready to <span className="text-gradient-brand">transform support?</span></h2>
                     <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto font-medium">
-                        Join 2,000+ companies using SalesAI for Sales & Customer Success.
+                        Join 2,000+ companies using ConvergsAI for Sales & Customer Success.
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4">
                         <button className="bg-white text-black text-lg font-bold px-10 py-5 rounded-full hover:scale-105 transition-transform shadow-2xl">Start Free Trial</button>
@@ -505,8 +505,8 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 text-sm text-slate-400">
                     <div>
                         <div className="flex items-center gap-2 mb-6">
-                            <Zap size={18} className="text-blue-500" />
-                            <span className="text-lg font-bold text-white">SalesAI</span>
+                            <img src="/logo.png" alt="ConvergsAI" className="w-5 h-5 object-contain" />
+                            <span className="text-lg font-bold text-white">ConvergsAI</span>
                         </div>
                         <p className="mb-6 leading-relaxed font-medium">Automating the future of sales conversations & support tickets with human-like AI.</p>
                         <div className="flex gap-4">
@@ -540,7 +540,7 @@ export default function LandingPage() {
                 </div>
                 <div className="max-w-7xl mx-auto px-6 pt-12 mt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600 font-medium">
                     <div className="flex flex-col md:flex-row items-center gap-4">
-                        <span>© 2024 SalesAI Inc. All rights reserved.</span>
+                        <span>© 2024 ConvergsAI Inc. All rights reserved.</span>
                         <span className="hidden md:block w-1 h-1 bg-slate-700 rounded-full"></span>
                         <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full border border-white/5">
                             <span className="text-slate-500">Incubated by</span>

@@ -227,7 +227,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
 
     return (
         <motion.div
-            className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden select-none"
             initial={{ opacity: 1 }}
             exit={{
                 opacity: 0,
@@ -450,7 +450,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                                 transition={{ delay: 0.5 }}
                             >
                                 <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-400">
-                                    Sales
+                                    Convergs
                                 </span>
                                 <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-blue-600">
                                     AI
@@ -530,7 +530,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                                 onMouseLeave={stopHold}
                                 onTouchStart={startHold}
                                 onTouchEnd={stopHold}
-                                className="relative w-48 h-48 rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-black border border-white/10 shadow-2xl flex flex-col items-center justify-center gap-3 group cursor-pointer overflow-hidden transition-shadow duration-500"
+                                className="relative w-48 h-48 rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-black border border-white/10 shadow-2xl flex flex-col items-center justify-center gap-3 group cursor-pointer overflow-hidden transition-shadow duration-500 select-none touch-none"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -610,7 +610,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                         exit={{ opacity: 0, scale: 0.8 }}
                     >
                         <motion.div
-                            className="text-center"
+                            className="text-center select-none"
                             animate={{
                                 filter: ['blur(0px)', 'blur(10px)'],
                                 opacity: [1, 0]

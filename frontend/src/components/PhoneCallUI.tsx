@@ -57,7 +57,7 @@ export default function PhoneCallUI({ initialPrompt, onCallStart }: PhoneCallUIP
                 const greeting: Message = {
                     id: uuidv4(),
                     role: 'assistant',
-                    content: "Hi! I'm Emma from SalesAI. I noticed you were checking out our enterprise plan. Do you have a minute to chat about your sales goals?",
+                    content: "Hi! I'm Emma from ConvergsAI. I noticed you were checking out our enterprise plan. Do you have a minute to chat about your sales goals?",
                     timestamp: new Date(),
                 };
                 setMessages([greeting]);
@@ -165,7 +165,7 @@ export default function PhoneCallUI({ initialPrompt, onCallStart }: PhoneCallUIP
                                     </span>
                                 </>
                             ) : (
-                                <span className="text-xs font-medium text-slate-400">SalesAI Agent</span>
+                                <span className="text-xs font-medium text-slate-400">ConvergsAI Agent</span>
                             )}
                         </motion.div>
                     </div>
