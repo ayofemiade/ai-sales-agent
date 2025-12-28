@@ -8,17 +8,38 @@
   --background-end-rgb: 15, 23, 42;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
 body {
   @apply font-sans;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  -webkit-overflow-scrolling: touch;
 }
 
-p, span, li, input, textarea, button {
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 500px;
+}
+
+p,
+span,
+li,
+input,
+textarea,
+button {
   @apply font-secondary;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   @apply font-sans tracking-tight;
 }
 

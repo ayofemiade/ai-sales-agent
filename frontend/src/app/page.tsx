@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import PhoneCallUI from '@/components/PhoneCallUI';
 import Background3D from '@/components/Background3D';
 import CinematicIntro from '@/components/CinematicIntro';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import {
-    CheckCircle2, Zap, Globe, Shield, BarChart3, Clock, ArrowRight, Menu,
+    CheckCircle2, Zap, Globe, Shield, BarChart3, Clock, ArrowRight, Menu, X,
     Phone, Settings, Link as LinkIcon, Mic, ChevronDown, ChevronUp, Star,
     Headphones, MessageCircle, Heart, Users
 } from 'lucide-react';
@@ -66,7 +66,21 @@ const faqs = [
 export default function LandingPage() {
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showIntro, setShowIntro] = useState(true);
+    const [showIntro, setShowIntro] = useState(false);
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        setHydrated(true);
+        const hasSeenIntro = sessionStorage.getItem('hasSeenIntro');
+        if (!hasSeenIntro) {
+            setShowIntro(true);
+        }
+    }, []);
+
+    const handleIntroComplete = () => {
+        setShowIntro(false);
+        sessionStorage.setItem('hasSeenIntro', 'true');
+    };
 
     // 3D Tilt Logic
     const heroRef = useRef<HTMLDivElement>(null);
@@ -97,7 +111,7 @@ export default function LandingPage() {
     return (
         <div className="min-h-screen bg-[#020617] text-white selection:bg-blue-500/30 font-sans overflow-x-hidden">
             <AnimatePresence>
-                {showIntro && <CinematicIntro onComplete={() => setShowIntro(false)} />}
+                {showIntro && <CinematicIntro onComplete={handleIntroComplete} />}
             </AnimatePresence>
 
             {/* Ambient Backgrounds */}
@@ -126,11 +140,36 @@ export default function LandingPage() {
                     </div>
 
                     <div className="md:hidden">
-                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-300 hover:text-white">
-                            <Menu />
+                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-300 hover:text-white transition-colors relative z-[70]">
+                            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu Overlay */}
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:hidden"
+                        >
+                            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-2xl" onClick={() => setMobileMenuOpen(false)} />
+                            <div className="glass-premium w-full rounded-[2.5rem] p-8 flex flex-col gap-6 text-center relative z-10 border-white/20">
+                                <Link href="/playground" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-bold text-blue-300 flex items-center justify-center gap-2">
+                                    <Zap /> Playground
+                                </Link>
+                                <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-bold hover:text-blue-400 transition-colors">Features</a>
+                                <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-bold hover:text-blue-400 transition-colors">How it Works</a>
+                                <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-bold hover:text-blue-400 transition-colors">Pricing</a>
+                                <div className="h-px bg-white/10 my-2" />
+                                <button className="text-xl font-bold">Log In</button>
+                                <button className="bg-white text-black py-4 rounded-full text-xl font-bold shadow-xl">Get Started</button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
             {/* Hero Section */}
