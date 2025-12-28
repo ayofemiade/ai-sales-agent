@@ -93,14 +93,14 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
 
     // Particle system initialization
     useEffect(() => {
-        const particleCount = performanceMode === 'low' ? 40 : 150;
+        const particleCount = performanceMode === 'low' ? 40 : 250; // Boosted high-end intensity
         particlesRef.current = Array.from({ length: particleCount }, (_, i) => ({
             id: i,
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
-            vx: (Math.random() - 0.5) * (performanceMode === 'low' ? 0.3 : 0.5),
-            vy: (Math.random() - 0.5) * (performanceMode === 'low' ? 0.3 : 0.5),
-            size: Math.random() * (performanceMode === 'low' ? 1.5 : 2) + 0.5,
+            vx: (Math.random() - 0.5) * (performanceMode === 'low' ? 0.3 : 0.6),
+            vy: (Math.random() - 0.5) * (performanceMode === 'low' ? 0.3 : 0.6),
+            size: Math.random() * (performanceMode === 'low' ? 1.5 : 2.5) + 0.5, // Slightly larger particles for high-end
             opacity: Math.random() * 0.5 + 0.2,
             hue: Math.random() * 60 + 200, // Blue spectrum
         }));
@@ -122,7 +122,9 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const particles = particlesRef.current;
-            const connectionDistance = phase === 'signal' ? 150 : 100;
+            const connectionDistance = phase === 'signal'
+                ? (performanceMode === 'low' ? 120 : 180)
+                : (performanceMode === 'low' ? 80 : 140);
 
             // Update and draw particles
             particles.forEach((particle, i) => {
@@ -246,7 +248,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
             {/* Particle Canvas */}
             <canvas
                 ref={canvasRef}
-                className="fixed inset-0 pointer-events-none"
+                className={`fixed inset-0 pointer-events-none ${performanceMode === 'high' ? 'opacity-80' : 'opacity-50'}`}
                 style={{ mixBlendMode: 'screen' }}
             />
 
@@ -262,6 +264,23 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                         filter: 'blur(40px)',
                     }}
                 />
+            )}
+
+            {/* Shifting Nebula Background - High End Only */}
+            {performanceMode === 'high' && (
+                <div className="fixed inset-0 pointer-events-none transition-opacity duration-1000">
+                    <motion.div
+                        className="absolute inset-0 opacity-20"
+                        animate={{
+                            background: [
+                                'radial-gradient(circle at 20% 30%, rgba(59,130,246,0.15) 0%, transparent 50%)',
+                                'radial-gradient(circle at 80% 70%, rgba(139,92,246,0.15) 0%, transparent 50%)',
+                                'radial-gradient(circle at 20% 30%, rgba(59,130,246,0.15) 0%, transparent 50%)',
+                            ]
+                        }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                    />
+                </div>
             )}
 
             {/* Gradient Overlays */}
@@ -358,10 +377,10 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, y: -50, transition: { duration: 0.8 } }}
                     >
-                        {/* Waveform Visualization - REDUCED ON LOW PERFORMANCE */}
-                        <div className="relative w-full max-w-2xl h-32 flex items-center justify-center gap-1 mb-16">
-                            {Array.from({ length: performanceMode === 'low' ? 25 : 60 }).map((_, i) => {
-                                const height = Math.sin(i * 0.3) * 30 + 40;
+                        {/* Waveform Visualization - REDUCED ON LOW PERFORMANCE, BOOSTED ON HIGH */}
+                        <div className="relative w-full max-w-2xl h-32 flex items-center justify-center gap-1 mb-16 px-4">
+                            {Array.from({ length: performanceMode === 'low' ? 25 : 80 }).map((_, i) => {
+                                const height = Math.sin(i * (performanceMode === 'low' ? 0.3 : 0.2)) * 30 + 40;
                                 return (
                                     <motion.div
                                         key={i}
@@ -374,7 +393,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                                         transition={{
                                             duration: 2,
                                             repeat: Infinity,
-                                            delay: i * 0.02,
+                                            delay: i * (performanceMode === 'low' ? 0.05 : 0.02),
                                             ease: "easeInOut"
                                         }}
                                     />
@@ -487,6 +506,21 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
 
                         {/* The Sacred Button - Mid Section */}
                         <div className="relative flex items-center justify-center py-4 md:py-10">
+                            {/* Decorative Orbitals - High End Only */}
+                            {performanceMode === 'high' && (
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <motion.div
+                                        className="absolute w-[400px] h-[400px] border border-blue-500/5 rounded-full"
+                                        animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+                                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                    />
+                                    <motion.div
+                                        className="absolute w-[350px] h-[350px] border border-purple-500/5 rounded-full"
+                                        animate={{ rotate: -360, scale: [1.1, 1, 1.1] }}
+                                        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                                    />
+                                </div>
+                            )}
                             <div className="relative scale-[0.85] sm:scale-75 md:scale-80 lg:scale-90">
                                 {/* Outer Glow Ring */}
                                 <motion.div
