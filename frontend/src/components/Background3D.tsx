@@ -18,11 +18,16 @@ export default function Background3D() {
         let width = canvas.width = canvas.parentElement?.offsetWidth || window.innerWidth;
         let height = canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight;
 
+        // Detect Performance
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const lowHardware = 'hardwareConcurrency' in navigator && (navigator.hardwareConcurrency as number) < 8;
+        const lowPerf = isMobile || lowHardware;
+
         // --- GLOBE CONFIG ---
-        const GLOBE_RADIUS = 350;
-        const DOT_COUNT = 1000;
-        const DOT_SIZE = 1.5;
-        const ARC_COUNT = 15;
+        const GLOBE_RADIUS = isMobile ? 250 : 350;
+        const DOT_COUNT = lowPerf ? 300 : 1000;
+        const DOT_SIZE = lowPerf ? 2 : 1.5;
+        const ARC_COUNT = lowPerf ? 5 : 15;
 
         // State
         let rotation = 0;
@@ -171,9 +176,10 @@ export default function Background3D() {
                 // Add rotation to the arc points themselves so they turn with the globe
                 // Actually simpler: The arc points are fixed on the globe surface, we rotate the calculated 3D point
 
-                // We draw a trail
+                // We draw a trail - REDUCED ON LOW PERFORMANCE
                 const trailLength = 0.2;
-                for (let t = 0; t < trailLength; t += 0.02) {
+                const trailStep = lowPerf ? 0.05 : 0.02;
+                for (let t = 0; t < trailLength; t += trailStep) {
                     const p = arc.progress - t;
                     if (p < 0) continue;
 

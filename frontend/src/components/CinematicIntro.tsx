@@ -24,6 +24,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
     const [holdProgress, setHoldProgress] = useState(0);
     const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
     const [isHolding, setIsHolding] = useState(false);
+    const [performanceMode, setPerformanceMode] = useState<'high' | 'low'>('high');
 
     const holdInterval = useRef<NodeJS.Timeout | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,8 +43,14 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
     const parallaxX = useTransform(mouseX, [-500, 500], [-5, 5]);
     const parallaxY = useTransform(mouseY, [-500, 500], [-5, 5]);
 
-    // Lock scroll
+    // Performance detection
     useEffect(() => {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const lowHardware = 'hardwareConcurrency' in navigator && (navigator.hardwareConcurrency as number) < 8;
+        if (isMobile || lowHardware) {
+            setPerformanceMode('low');
+        }
+
         document.body.style.overflow = 'hidden';
         return () => {
             document.body.style.overflow = 'unset';
@@ -86,18 +93,18 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
 
     // Particle system initialization
     useEffect(() => {
-        const particleCount = 150;
+        const particleCount = performanceMode === 'low' ? 40 : 150;
         particlesRef.current = Array.from({ length: particleCount }, (_, i) => ({
             id: i,
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            size: Math.random() * 2 + 0.5,
+            vx: (Math.random() - 0.5) * (performanceMode === 'low' ? 0.3 : 0.5),
+            vy: (Math.random() - 0.5) * (performanceMode === 'low' ? 0.3 : 0.5),
+            size: Math.random() * (performanceMode === 'low' ? 1.5 : 2) + 0.5,
             opacity: Math.random() * 0.5 + 0.2,
             hue: Math.random() * 60 + 200, // Blue spectrum
         }));
-    }, []);
+    }, [performanceMode]);
 
     // Advanced particle animation with neural network effect
     useEffect(() => {
@@ -146,8 +153,8 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                 ctx.fillStyle = `hsla(${particle.hue}, 70%, 60%, ${particle.opacity})`;
                 ctx.fill();
 
-                // Draw connections (neural network effect)
-                if (phase === 'signal' || phase === 'interface') {
+                // Draw connections (neural network effect) - DISABLED ON LOW PERFORMANCE
+                if (performanceMode === 'high' && (phase === 'signal' || phase === 'interface')) {
                     particles.slice(i + 1).forEach(otherParticle => {
                         const dx = particle.x - otherParticle.x;
                         const dy = particle.y - otherParticle.y;
@@ -243,17 +250,19 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                 style={{ mixBlendMode: 'screen' }}
             />
 
-            {/* Cursor Glow */}
-            <motion.div
-                className="fixed w-96 h-96 rounded-full pointer-events-none z-0"
-                style={{
-                    left: cursorPos.x - 192,
-                    top: cursorPos.y - 192,
-                    scale: cursorGlowScale,
-                    background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)',
-                    filter: 'blur(40px)',
-                }}
-            />
+            {/* Cursor Glow - HIDDEN ON LOW PERFORMANCE FOR RENDERING SPEED */}
+            {performanceMode === 'high' && (
+                <motion.div
+                    className="fixed w-96 h-96 rounded-full pointer-events-none z-0"
+                    style={{
+                        left: cursorPos.x - 192,
+                        top: cursorPos.y - 192,
+                        scale: cursorGlowScale,
+                        background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)',
+                        filter: 'blur(40px)',
+                    }}
+                />
+            )}
 
             {/* Gradient Overlays */}
             <div className="fixed inset-0 bg-gradient-to-br from-blue-950/20 via-transparent to-purple-950/20 pointer-events-none" />
@@ -349,9 +358,9 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, y: -50, transition: { duration: 0.8 } }}
                     >
-                        {/* Waveform Visualization */}
+                        {/* Waveform Visualization - REDUCED ON LOW PERFORMANCE */}
                         <div className="relative w-full max-w-2xl h-32 flex items-center justify-center gap-1 mb-16">
-                            {Array.from({ length: 60 }).map((_, i) => {
+                            {Array.from({ length: performanceMode === 'low' ? 25 : 60 }).map((_, i) => {
                                 const height = Math.sin(i * 0.3) * 30 + 40;
                                 return (
                                     <motion.div
