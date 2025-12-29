@@ -7,6 +7,10 @@ import { Models, OAuthProvider } from 'appwrite';
 interface AuthContextType {
     user: Models.User<Models.Preferences> | null;
     loading: boolean;
+    isAuthModalOpen: boolean;
+    isLoggingOut: boolean;
+    openAuthModal: () => void;
+    closeAuthModal: () => void;
     loginWithGoogle: () => Promise<void>;
     logout: () => Promise<void>;
 }
@@ -16,6 +20,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     useEffect(() => {
         checkUser();
@@ -32,10 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const openAuthModal = () => setIsAuthModalOpen(true);
+    const closeAuthModal = () => setIsAuthModalOpen(false);
+
     const loginWithGoogle = async () => {
         try {
-            // Redirect to Appwrite OAuth provider
-            // The success and failure URLs should point back to your app
             const origin = window.location.origin;
             await account.createOAuth2Session(
                 OAuthProvider.Google,
@@ -48,16 +55,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const logout = async () => {
+        setIsLoggingOut(true);
         try {
+            // Artificial delay for smooth transition if needed, 
+            // but usually a nice animation is better managed in the UI component
+            await new Promise(resolve => setTimeout(resolve, 800));
             await account.deleteSession('current');
             setUser(null);
         } catch (error) {
             console.error('Logout error:', error);
+        } finally {
+            setIsLoggingOut(false);
         }
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout }}>
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            isAuthModalOpen,
+            isLoggingOut,
+            openAuthModal,
+            closeAuthModal,
+            loginWithGoogle,
+            logout
+        }}>
             {children}
         </AuthContext.Provider>
     );

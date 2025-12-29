@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { AnimatePresence } from 'framer-motion';
 
 const CinematicIntro = dynamic(() => import('./CinematicIntro'), { ssr: false });
+const AuthModal = dynamic(() => import('./AuthModal'), { ssr: false });
 
 function IntroContainer() {
     const { showIntro, setShowIntro } = useIntro();
@@ -50,6 +51,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         <AuthProvider>
             <IntroProvider>
                 <IntroContainer />
+                <AuthModal />
                 <MainContent>
                     {children}
                 </MainContent>

@@ -6,7 +6,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionV
 import {
     CheckCircle2, Zap, Globe, Shield, BarChart3, Clock, ArrowRight, Menu, X,
     Phone, Settings, Link as LinkIcon, Mic, ChevronDown, ChevronUp, Star,
-    Headphones, MessageCircle, Heart, Users, Sparkles, User, LogOut
+    Headphones, MessageCircle, Heart, Users, Sparkles, User, LogOut, Loader2
 } from 'lucide-react';
 import { useIntro } from '@/components/IntroContext';
 import { useAuth } from '@/components/AuthContext';
@@ -75,7 +75,7 @@ export default function LandingPage() {
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { replayIntro } = useIntro();
-    const { user, loginWithGoogle, logout } = useAuth();
+    const { user, openAuthModal, logout, isLoggingOut } = useAuth();
 
     // 3D Tilt Logic
     const heroRef = useRef<HTMLDivElement>(null);
@@ -138,31 +138,41 @@ export default function LandingPage() {
 
                         {user ? (
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 bg-white/5 border border-white/10 py-1.5 px-3 rounded-full">
-                                    <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">
-                                        {user.name?.[0] || <User size={12} />}
+                                <motion.div
+                                    className="flex items-center gap-3 bg-white/5 border border-white/10 py-1.5 px-4 rounded-full hover:bg-white/10 transition-colors cursor-default"
+                                    animate={isLoggingOut ? { scale: 0.9, opacity: 0.5 } : { scale: 1, opacity: 1 }}
+                                >
+                                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[10px] font-bold shadow-lg">
+                                        {user.name?.[0] || <User size={14} />}
                                     </div>
-                                    <span className="text-xs font-bold text-white max-w-[100px] truncate">{user.name}</span>
-                                </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-slate-500 font-bold uppercase leading-none mb-0.5">Member</span>
+                                        <span className="text-xs font-bold text-white max-w-[100px] truncate leading-none">{user.name}</span>
+                                    </div>
+                                </motion.div>
                                 <button
                                     onClick={() => logout()}
-                                    className="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                                    disabled={isLoggingOut}
+                                    className={`p-2.5 rounded-full bg-white/5 border border-white/10 text-slate-400 hover:text-red-400 hover:bg-red-400/10 hover:border-red-400/20 transition-all group relative ${isLoggingOut ? 'cursor-not-allowed opacity-50' : ''}`}
                                     aria-label="Log Out"
                                 >
-                                    <LogOut size={18} />
+                                    {isLoggingOut ? <Loader2 className="animate-spin" size={18} /> : <LogOut size={18} />}
+                                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                        Log Out
+                                    </span>
                                 </button>
                             </div>
                         ) : (
                             <>
                                 <button
-                                    onClick={() => loginWithGoogle()}
-                                    className="text-white hover:text-blue-400 transition-colors"
+                                    onClick={() => openAuthModal()}
+                                    className="text-white hover:text-blue-400 transition-colors font-medium"
                                 >
                                     Log In
                                 </button>
                                 <button
-                                    onClick={() => loginWithGoogle()}
-                                    className="bg-white text-black hover:bg-slate-200 py-2 px-4 rounded-full font-bold transition-all transform hover:scale-105"
+                                    onClick={() => openAuthModal()}
+                                    className="bg-white text-black hover:bg-slate-200 py-2.5 px-6 rounded-full font-bold transition-all transform hover:scale-105 shadow-xl"
                                     aria-label="Get started with ConvergsAI"
                                 >
                                     Get Started
@@ -202,24 +212,29 @@ export default function LandingPage() {
                                 <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-bold hover:text-blue-400 transition-colors">Pricing</a>
                                 <div className="h-px bg-white/10 my-2" />
                                 {user ? (
-                                    <div className="flex flex-col gap-4 items-center">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold">
+                                    <div className="flex flex-col gap-6 items-center">
+                                        <div className="flex items-center gap-4 bg-white/5 p-4 rounded-3xl w-full justify-center border border-white/10">
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/20">
                                                 {user.name?.[0]}
                                             </div>
-                                            <span className="text-xl font-bold">{user.name}</span>
+                                            <div className="text-left">
+                                                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Member</div>
+                                                <div className="text-xl font-bold text-white">{user.name}</div>
+                                            </div>
                                         </div>
                                         <button
                                             onClick={() => { logout(); setMobileMenuOpen(false); }}
-                                            className="text-red-400 font-bold flex items-center gap-2"
+                                            disabled={isLoggingOut}
+                                            className="w-full py-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 font-bold flex items-center justify-center gap-3 transition-all active:scale-95"
                                         >
-                                            <LogOut size={20} /> Log Out
+                                            {isLoggingOut ? <Loader2 className="animate-spin" size={20} /> : <LogOut size={20} />}
+                                            {isLoggingOut ? 'Logging out...' : 'Log Out Account'}
                                         </button>
                                     </div>
                                 ) : (
                                     <>
-                                        <button onClick={() => { loginWithGoogle(); setMobileMenuOpen(false); }} className="text-xl font-bold">Log In</button>
-                                        <button onClick={() => { loginWithGoogle(); setMobileMenuOpen(false); }} className="bg-white text-black py-4 rounded-full text-xl font-bold shadow-xl">Get Started</button>
+                                        <button onClick={() => { openAuthModal(); setMobileMenuOpen(false); }} className="text-xl font-bold hover:text-blue-400 transition-colors">Log In</button>
+                                        <button onClick={() => { openAuthModal(); setMobileMenuOpen(false); }} className="bg-white text-black py-4 rounded-full text-xl font-bold shadow-xl active:scale-95 transition-transform">Get Started</button>
                                     </>
                                 )}
                             </div>
@@ -272,8 +287,11 @@ export default function LandingPage() {
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full pt-4 hero-title-secondary" style={{ animationDelay: '0.8s' }}>
-                            <button className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-bold py-4 px-8 rounded-full shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] hover:shadow-[0_0_60px_-10px_rgba(79,70,229,0.6)] hover:scale-105 transition-all duration-300 group flex items-center gap-2">
-                                Book a Demo
+                            <button
+                                onClick={() => user ? window.scrollTo({ top: 1000, behavior: 'smooth' }) : openAuthModal()}
+                                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-bold py-4 px-8 rounded-full shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] hover:shadow-[0_0_60px_-10px_rgba(79,70,229,0.6)] hover:scale-105 transition-all duration-300 group flex items-center gap-2"
+                            >
+                                {user ? 'View Dashboard' : 'Book a Demo'}
                                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                             </button>
                             <button className="glass px-8 py-4 rounded-full text-lg font-medium hover:bg-white/10 transition-all border border-white/10 flex items-center gap-2">
