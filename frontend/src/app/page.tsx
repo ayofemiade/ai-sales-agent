@@ -6,14 +6,14 @@ import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionV
 import {
     CheckCircle2, Zap, Globe, Shield, BarChart3, Clock, ArrowRight, Menu, X,
     Phone, Settings, Link as LinkIcon, Mic, ChevronDown, ChevronUp, Star,
-    Headphones, MessageCircle, Heart, Users
+    Headphones, MessageCircle, Heart, Users, Sparkles
 } from 'lucide-react';
+import { useIntro } from '@/components/IntroContext';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
 // Dynamic imports for sub-fold components
 const Background3D = dynamic(() => import('@/components/Background3D'), { ssr: false });
-const CinematicIntro = dynamic(() => import('@/components/CinematicIntro'), { ssr: false });
 const PhoneCallUI = dynamic(() => import('@/components/PhoneCallUI'), {
     ssr: false,
     loading: () => <div className="h-[600px] w-full bg-slate-900/20 animate-pulse rounded-[2.5rem]" />
@@ -73,22 +73,7 @@ const faqs = [
 export default function LandingPage() {
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showIntro, setShowIntro] = useState(false);
-    const [hydrated, setHydrated] = useState(false);
-
-    useEffect(() => {
-        setHydrated(true);
-        const hasSeenIntro = sessionStorage.getItem('hasSeenIntro');
-        if (!hasSeenIntro) {
-            setShowIntro(true);
-        }
-    }, []);
-
-    const handleIntroComplete = () => {
-        setShowIntro(false);
-        sessionStorage.setItem('hasSeenIntro', 'true');
-        window.scrollTo(0, 0); // Reset scroll position after intro
-    };
+    const { replayIntro } = useIntro();
 
     // 3D Tilt Logic
     const heroRef = useRef<HTMLDivElement>(null);
@@ -118,9 +103,7 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen bg-[#020617] text-white selection:bg-blue-500/30 font-sans overflow-x-hidden">
-            <AnimatePresence>
-                {showIntro && <CinematicIntro onComplete={handleIntroComplete} />}
-            </AnimatePresence>
+            {/* Intro is now handled globally in ClientLayout */}
 
             {/* Ambient Backgrounds */}
             <div className="fixed inset-0 animate-aurora pointer-events-none z-0" />
@@ -691,6 +674,14 @@ export default function LandingPage() {
                             <span className="text-slate-500">Incubated by</span>
                             <span className="text-slate-300 font-bold tracking-wide">DETOVA LABS</span>
                         </span>
+                        <span className="hidden md:block w-1 h-1 bg-slate-700 rounded-full"></span>
+                        <button
+                            onClick={replayIntro}
+                            className="flex items-center gap-1.5 text-slate-500 hover:text-blue-400 transition-colors cursor-pointer group"
+                        >
+                            <Sparkles size={12} className="group-hover:animate-pulse" />
+                            <span>Replay Experience</span>
+                        </button>
                     </div>
                     <div className="flex gap-8">
                         <span>San Francisco • London • Tokyo</span>

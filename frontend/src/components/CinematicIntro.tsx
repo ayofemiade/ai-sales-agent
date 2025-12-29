@@ -511,7 +511,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
                                     transition={{ duration: 2, repeat: Infinity }}
                                 />
                                 <span className="text-[10px] uppercase tracking-[0.4em] text-blue-300 font-medium">
-                                    Secure Neural Channel
+                                    Encrypted AI Voice Intelligence
                                 </span>
                             </motion.div>
 
