@@ -232,7 +232,7 @@ export default function LandingPage() {
                         </h1>
 
                         <p className="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed max-w-xl mx-auto font-medium hero-title-secondary" style={{ animationDelay: '0.6s' }}>
-                            ConvergsAI qualifies inbound leads and books real meetings with human-like voice intelligence. Built for mid-sized sales teams to scale without hiring.
+                            ConvergsAI qualifies inbound leads and books real meetings with human-like voice intelligence.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full pt-4 hero-title-secondary" style={{ animationDelay: '0.8s' }}>
