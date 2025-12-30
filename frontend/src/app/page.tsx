@@ -75,7 +75,7 @@ export default function LandingPage() {
     const [activeFaq, setActiveFaq] = useState<number | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { replayIntro } = useIntro();
-    const { user, openAuthModal, logout, isLoggingOut } = useAuth();
+    const { user, userName, openAuthModal, logout, isLoggingOut } = useAuth();
 
     // Lock scrolling when mobile menu is open
     useEffect(() => {
@@ -161,11 +161,11 @@ export default function LandingPage() {
                                     animate={isLoggingOut ? { scale: 0.9, opacity: 0.5 } : { scale: 1, opacity: 1 }}
                                 >
                                     <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[10px] font-bold shadow-lg">
-                                        {user.name?.[0] || <User size={14} />}
+                                        {userName?.[0] || <User size={14} />}
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-[10px] text-slate-500 font-bold uppercase leading-none mb-0.5">Member</span>
-                                        <span className="text-xs font-bold text-white max-w-[100px] truncate leading-none">{user.name}</span>
+                                        <span className="text-xs font-bold text-white max-w-[100px] truncate leading-none">{userName}</span>
                                     </div>
                                 </motion.div>
                                 <button
@@ -233,11 +233,11 @@ export default function LandingPage() {
                                     <div className="flex flex-col gap-6 items-center">
                                         <div className="flex items-center gap-4 bg-white/5 p-4 rounded-3xl w-full justify-center border border-white/10">
                                             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/20">
-                                                {user.name?.[0]}
+                                                {userName?.[0]}
                                             </div>
                                             <div className="text-left">
                                                 <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Member</div>
-                                                <div className="text-xl font-bold text-white">{user.name}</div>
+                                                <div className="text-xl font-bold text-white">{userName}</div>
                                             </div>
                                         </div>
                                         <button

@@ -33,7 +33,7 @@ export default function PlaygroundPage() {
     const [systemPrompt, setSystemPrompt] = useState(PRESETS[0].prompt);
     const [activePreset, setActivePreset] = useState(0);
     const [phoneKey, setPhoneKey] = useState(0); // Used to reset the phone component
-    const { user, loading, openAuthModal } = useAuth();
+    const { user, userName, loading, openAuthModal } = useAuth();
 
     const handlePresetSelect = (index: number) => {
         setActivePreset(index);
@@ -66,11 +66,11 @@ export default function PlaygroundPage() {
                     {user ? (
                         <div className="flex items-center gap-3 bg-white/5 border border-white/10 py-2 px-4 rounded-2xl">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold shadow-lg">
-                                {user.name?.[0] || <User size={16} />}
+                                {userName?.[0] || <User size={16} />}
                             </div>
                             <div className="hidden sm:block">
                                 <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider leading-none mb-1">Authenticated</div>
-                                <div className="text-sm font-bold text-white leading-none">{user.name}</div>
+                                <div className="text-sm font-bold text-white leading-none">{userName}</div>
                             </div>
                         </div>
                     ) : (

@@ -1,11 +1,12 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { account } from '@/lib/appwrite';
-import { Models, OAuthProvider } from 'appwrite';
+import { supabase } from '@/lib/supabase';
+import { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
-    user: Models.User<Models.Preferences> | null;
+    user: User | null;
+    userName: string | null;
     loading: boolean;
     isAuthModalOpen: boolean;
     isLoggingOut: boolean;
@@ -18,37 +19,49 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [userName, setUserName] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     useEffect(() => {
-        checkUser();
-    }, []);
-
-    const checkUser = async () => {
-        try {
-            const currentUser = await account.get();
-            setUser(currentUser);
-        } catch (error) {
-            setUser(null);
-        } finally {
+        const updateUserData = (user: User | null) => {
+            setUser(user);
+            setUserName(user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || null);
+        };
+        // Initial session check
+        const getInitialSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            updateUserData(session?.user ?? null);
             setLoading(false);
-        }
-    };
+        };
+
+        getInitialSession();
+
+        // Listen for auth state changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            updateUserData(session?.user ?? null);
+            setLoading(false);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
 
     const openAuthModal = () => setIsAuthModalOpen(true);
     const closeAuthModal = () => setIsAuthModalOpen(false);
 
     const loginWithGoogle = async () => {
         try {
-            const origin = window.location.origin;
-            await account.createOAuth2Session(
-                OAuthProvider.Google,
-                `${origin}/auth/callback`,
-                origin
-            );
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                }
+            });
+            if (error) throw error;
         } catch (error) {
             console.error('Login error:', error);
         }
@@ -57,10 +70,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const logout = async () => {
         setIsLoggingOut(true);
         try {
-            // Artificial delay for smooth transition if needed, 
-            // but usually a nice animation is better managed in the UI component
             await new Promise(resolve => setTimeout(resolve, 800));
-            await account.deleteSession('current');
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
             setUser(null);
         } catch (error) {
             console.error('Logout error:', error);
@@ -72,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return (
         <AuthContext.Provider value={{
             user,
+            userName,
             loading,
             isAuthModalOpen,
             isLoggingOut,

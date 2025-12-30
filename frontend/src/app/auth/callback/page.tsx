@@ -1,26 +1,24 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { account } from '@/lib/appwrite';
+import { supabase } from '@/lib/supabase';
 
 export default function AuthCallback() {
     const router = useRouter();
 
     useEffect(() => {
-        // Appwrite handles the token and session automatically via URL params/cookies
-        // We just need to verify the user is now logged in and redirect
-        const checkSession = async () => {
-            try {
-                await account.get();
+        const handleAuthCallback = async () => {
+            const { data, error } = await supabase.auth.getSession();
+            if (data?.session) {
                 router.push('/');
-            } catch (error) {
-                console.error('Failed to verify session:', error);
+            } else if (error) {
+                console.error('Error during auth callback:', error.message);
                 router.push('/');
             }
         };
 
-        checkSession();
+        handleAuthCallback();
     }, [router]);
 
     return (
