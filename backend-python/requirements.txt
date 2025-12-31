@@ -1,5 +1,15 @@
 fastapi
 uvicorn
 python-dotenv
+livekit
+livekit-agents
+livekit-plugins-cartesia
+livekit-plugins-silero
+livekit-plugins-openai
 openai
 httpx
+pydantic
+pydantic-settings
+loguru
+python-multipart
+cerebras_cloud_sdk
